@@ -1,71 +1,49 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
+import { isRouteErrorResponse, Outlet, useRouteError } from 'react-router-dom';
+import React, { Suspense } from 'react';
 
-import type { Route } from "./+types/root";
-import "./app.css";
-
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
-
-export function Layout({ children }: { children: React.ReactNode }) {
+export default function App() {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* <meta httpEquiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;" /> */}
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          loading...
+        </div>
+      }
+    >
+      <Outlet />
+    </Suspense>
   );
 }
 
-export default function App() {
-  return <Outlet />;
-}
-
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+// 提取错误信息处理逻辑到单独函数
+const getErrorDetails = (errorToUse: unknown) => {
+  let message = 'Oops!';
+  let details = 'An unexpected error occurred.';
   let stack: string | undefined;
   let is404 = false;
 
-  if (isRouteErrorResponse(error)) {
-    is404 = error.status === 404;
-    message = is404 ? "404" : "Error";
+  if (isRouteErrorResponse(errorToUse)) {
+    is404 = errorToUse.status === 404;
+    message = is404 ? '404' : 'Error';
     details = is404
-      ? "Sorry, the page you are looking for does not exist or has been deleted."
-      : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+      ? 'Sorry, the page you are looking for does not exist or has been deleted.'
+      : errorToUse.statusText || details;
+  } else if (import.meta.env.DEV && errorToUse && errorToUse instanceof Error) {
+    details = (errorToUse as Error).message;
+    stack = (errorToUse as Error).stack;
   }
+
+  return { message, details, stack, is404 };
+};
+
+export function ErrorBoundary({ error }: { error?: unknown }) {
+  const routeError = useRouteError();
+  const errorToUse = error || routeError;
+  const { message, details, stack, is404 } = getErrorDetails(errorToUse);
 
   if (is404) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-[80vh] px-4 bg-gradient-to-br from-base-100 via-primary/10 to-secondary/10 dark:from-base-200 dark:via-primary/20 dark:to-secondary/20 transition-colors">
+      <main className="flex flex-col items-center justify-center min-h-[100vh] px-4 bg-gradient-to-br from-base-100 via-primary/10 to-secondary/10 dark:from-base-200 dark:via-primary/20 dark:to-secondary/20 transition-colors">
         <div className="relative flex flex-col items-center">
           <div className="relative flex items-center justify-center">
             <h1 className="text-[8rem] md:text-[10rem] font-extrabold text-error drop-shadow-lg z-10 select-none animate-bounce-slow">
