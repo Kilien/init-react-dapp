@@ -1,17 +1,23 @@
 import { isRouteErrorResponse, Outlet, useRouteError } from 'react-router-dom';
 import React, { Suspense } from 'react';
+import { ContextProviders, Layout } from './providers';
+import '@rainbow-me/rainbowkit/styles.css';
 
 export default function App() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center min-h-screen">
-          loading...
-        </div>
-      }
-    >
-      <Outlet />
-    </Suspense>
+    <ContextProviders>
+      <Layout>
+        <Suspense
+          fallback={
+            <div className="flex min-h-screen items-center justify-center">
+              loading...
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
+      </Layout>
+    </ContextProviders>
   );
 }
 
@@ -43,25 +49,25 @@ export function ErrorBoundary({ error }: { error?: unknown }) {
 
   if (is404) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-[100vh] px-4 bg-gradient-to-br from-base-100 via-primary/10 to-secondary/10 dark:from-base-200 dark:via-primary/20 dark:to-secondary/20 transition-colors">
+      <main className="from-base-100 via-primary/10 to-secondary/10 dark:from-base-200 dark:via-primary/20 dark:to-secondary/20 flex min-h-[100vh] flex-col items-center justify-center bg-gradient-to-br px-4 transition-colors">
         <div className="relative flex flex-col items-center">
           <div className="relative flex items-center justify-center">
-            <h1 className="text-[8rem] md:text-[10rem] font-extrabold text-error drop-shadow-lg z-10 select-none animate-bounce-slow">
+            <h1 className="text-error animate-bounce-slow z-10 text-[8rem] font-extrabold drop-shadow-lg select-none md:text-[10rem]">
               404
             </h1>
           </div>
-          <p className="text-xl md:text-2xl text-base-content/70 mb-8 mt-2 font-medium">
+          <p className="text-base-content/70 mt-2 mb-8 text-xl font-medium md:text-2xl">
             {details}
           </p>
           <a
             href="/"
-            className="btn btn-wide shadow-xl text-lg font-semibold transition-transform hover:scale-105 hover:shadow-2xl duration-200"
+            className="btn btn-wide text-lg font-semibold shadow-xl transition-transform duration-200 hover:scale-105 hover:shadow-2xl"
           >
             Back to Home
           </a>
         </div>
         {stack && (
-          <pre className="w-full max-w-2xl p-4 overflow-x-auto bg-base-200/80 rounded-box text-left mt-8 text-xs md:text-sm">
+          <pre className="bg-base-200/80 rounded-box mt-8 w-full max-w-2xl overflow-x-auto p-4 text-left text-xs md:text-sm">
             <code>{stack}</code>
           </pre>
         )}
@@ -70,21 +76,21 @@ export function ErrorBoundary({ error }: { error?: unknown }) {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-[60vh] gap-8 bg-base-100 dark:bg-base-200 transition-colors">
+    <main className="bg-base-100 dark:bg-base-200 flex min-h-[60vh] flex-col items-center justify-center gap-8 transition-colors">
       <div className="text-center">
-        <h1 className="text-5xl font-bold text-error mb-2 drop-shadow">
+        <h1 className="text-error mb-2 text-5xl font-bold drop-shadow">
           {message}
         </h1>
-        <p className="text-lg text-base-content/70 mb-6">{details}</p>
+        <p className="text-base-content/70 mb-6 text-lg">{details}</p>
         <a
           href="/"
-          className="btn  btn-wide shadow hover:scale-105 transition-transform"
+          className="btn btn-wide shadow transition-transform hover:scale-105"
         >
           Back to Home
         </a>
       </div>
       {stack && (
-        <pre className="w-full max-w-2xl p-4 overflow-x-auto bg-base-200 rounded-box text-left mt-6">
+        <pre className="bg-base-200 rounded-box mt-6 w-full max-w-2xl overflow-x-auto p-4 text-left">
           <code>{stack}</code>
         </pre>
       )}

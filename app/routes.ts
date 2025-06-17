@@ -3,8 +3,8 @@ import App, { ErrorBoundary } from './root';
 import React from 'react';
 
 // 懒加载页面组件
-const HomePage = React.lazy(() => import('./routes/home'));
-const TestPage = React.lazy(() => import('./routes/test'));
+const HomePage = React.lazy(() => import('./pages/Home'));
+const TestPage = React.lazy(() => import('./pages/test'));
 
 // 创建路由配置
 const routes = [
@@ -18,7 +18,7 @@ const routes = [
         element: React.createElement(
           React.Suspense,
           { fallback: React.createElement('div', null, 'loading...') },
-          React.createElement(HomePage),
+          React.createElement(HomePage)
         ),
       },
       {
@@ -26,7 +26,7 @@ const routes = [
         element: React.createElement(
           React.Suspense,
           { fallback: React.createElement('div', null, 'loading...') },
-          React.createElement(TestPage),
+          React.createElement(TestPage)
         ),
       },
     ],
