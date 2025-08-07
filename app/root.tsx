@@ -2,6 +2,7 @@ import { isRouteErrorResponse, Outlet, useRouteError } from 'react-router-dom';
 import React, { Suspense } from 'react';
 import { ContextProviders, Layout } from './providers';
 import '@rainbow-me/rainbowkit/styles.css';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 export default function App() {
   return (
@@ -15,6 +16,20 @@ export default function App() {
           }
         >
           <Outlet />
+
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            transition={Bounce}
+          />
         </Suspense>
       </Layout>
     </ContextProviders>
