@@ -4,8 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
+    "build": "vite build --mode testnet",
+    "build:test": "vite build --mode testnet",
+    "build:main": "vite build --mode mainnet",
+    "dev": "vite --mode testnet",
+    "dev:test": "vite --mode testnet",
+    "dev:main": "vite --mode mainnet",
     "preview": "vite preview",
     "typecheck": "tsc"
   },
