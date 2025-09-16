@@ -7,26 +7,36 @@ import autoprefixer from 'autoprefixer';
 import postcssImport from 'postcss-import';
 import postcssNested from 'postcss-nested';
 
-export default defineConfig({
-  plugins: [tailwindcss(), tsconfigPaths(), react()],
-  css: {
-    postcss: {
-      plugins: [
-        postcssImport(),
-        postcssNested(),
-        autoprefixer({ overrideBrowserslist: ['last 2 versions'] }),
-        cssnano({ preset: 'default' }),
-      ],
+export default defineConfig(({ mode }) => {
+  // 根据模式设置环境变量
+  const env = {
+    VITE_IS_TESTNET: mode === 'testnet' ? 'true' : 'false'
+  };
+
+  return {
+    define: {
+      'import.meta.env.VITE_IS_TESTNET': JSON.stringify(env.VITE_IS_TESTNET)
     },
-  },
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    minify: true,
-    sourcemap: false,
-  },
-  server: {
-    port: 3000,
-    open: true,
-  },
+    plugins: [tailwindcss(), tsconfigPaths(), react()],
+    css: {
+      postcss: {
+        plugins: [
+          postcssImport(),
+          postcssNested(),
+          autoprefixer({ overrideBrowserslist: ['last 2 versions'] }),
+          cssnano({ preset: 'default' }),
+        ],
+      },
+    },
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+      minify: true,
+      sourcemap: false,
+    },
+    server: {
+      port: 3000,
+      open: true,
+    },
+  };
 });
